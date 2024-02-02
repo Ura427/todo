@@ -25,7 +25,7 @@ const Card: React.FC<CardProps> = ({ id, text, status, variant, onClick, childre
       }}
       onClick={onClick}
     >
-      {id}: {text} {status === true ? "done" : "in progress"}
+      {id}: {text} <input type="checkbox" checked={status}/> 
       {children}
     </div>
   );
