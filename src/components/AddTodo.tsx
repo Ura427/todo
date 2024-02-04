@@ -26,7 +26,9 @@ const AddTodo: React.FC<AddTodoProps> = ({ setTodos }) => {
     const seconds = date.getSeconds();
 
     // Format the date in the desired format
-    const formattedDate = `${month} ${day} ${year} ${hours}:${minutes}:${seconds}`;
+    const formattedDate = `${month} ${day} ${year} ` +
+  `${hours}:${minutes}:${seconds}`.replace(/(?<!\d)(\d)(?!\d)/g, '0$1');
+
 
     //Create new Todo obj
     const obj: ITodo = {
