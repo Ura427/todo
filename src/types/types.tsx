@@ -1,6 +1,5 @@
 export interface ITodo {
     id: number,
-    task: string | undefined,
+    task: string,
     created: string,
-    completed: boolean
 }
