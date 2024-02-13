@@ -30,6 +30,7 @@ const AddTodo: React.FC<AddTodoProps> = ({ fetchTodos }) => {
       .catch((error: any) => {
         console.error(error);
       });
+      setInputValue("")
   };
 
   return (
