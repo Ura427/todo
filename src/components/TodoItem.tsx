@@ -2,38 +2,58 @@ import React, { useState } from "react";
 import { ITodo } from "../types/types";
 import EditIcon from "@mui/icons-material/Edit";
 import DoneIcon from "@mui/icons-material/Done";
+import axios from "axios";
 
 interface TodoItemProps {
   todo: ITodo;
   todos: ITodo[];
   setTodos: React.Dispatch<React.SetStateAction<ITodo[]>>;
+  fetchTodos: any;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({ todo, todos, setTodos }) => {
+const TodoItem: React.FC<TodoItemProps> = ({ todo, fetchTodos }) => {
   const [disabled, setDisabled] = useState<boolean>(true);
-   const [task, setTask] = useState<string | undefined>(todo.task)
-    
+  const [currTodo, setCurrTodo] = useState<ITodo>(todo);
+
   const handleCheckboxChange = (id: number) => {
-    setTodos(todos.filter((todo: ITodo) => todo.id !== id));
+    axios
+      .delete(`http://localhost:5000/api/todos/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        fetchTodos();
+      })
+      .catch((error) => {
+        console.error(`Error deleting element: ${error}`);
+      });
   };
 
   const handleTaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTask(e.target.value)
-  }
+    setCurrTodo((prev) => ({
+      ...prev,
+      task: e.target.value,
+    }));
+    console.log(currTodo);    
+  };
 
   const btnClickHandler = (id: number) => {
     setDisabled((prev) => !prev);
 
-    // if (disabled === true) {
-    //   setTodos(
-    //     todos.map((todo) => {
-    //       if (todo.id === id) {
-    //         todo[task] ===
-    //       }
-    //     })
-    //   );
-    // }
+    if(!disabled){
+      axios.put(`http://localhost:5000/api/todos/${id}`, {
+        id: id,
+        task: currTodo.task
+      })
+      .then((response) => {
+        console.log(response.data)
+        fetchTodos();
+      })
+      .catch((error: any) => {
+        console.error(error)
+      })
+    }
+   
   };
+
   return (
     <div
       style={{
@@ -43,13 +63,18 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, todos, setTodos }) => {
       }}
     >
       {todo.id}:{" "}
-      {disabled === true ? <>{task}</> : <><input type="text"  value={task} onChange={handleTaskChange}></input>{" "}</> }
-      
-      <input
-        type="checkbox"
-        checked={todo.completed}
-        onChange={() => handleCheckboxChange(todo.id)}
-      />
+      {disabled === true ? (
+        <>{currTodo.task}</>
+      ) : (
+        <>
+          <input
+            type="text"
+            value={currTodo.task}
+            onChange={handleTaskChange}
+          ></input>{" "}
+        </>
+      )}
+      <input type="checkbox" onChange={() => handleCheckboxChange(todo.id)} />
       <button onClick={() => btnClickHandler(todo.id)}>
         {disabled === true ? (
           <>
