@@ -1,20 +1,26 @@
 import React, { useState } from "react";
-import { ITodo } from "../types/types";
-import EditIcon from "@mui/icons-material/Edit";
-import DoneIcon from "@mui/icons-material/Done";
 import axios from "axios";
 
+//TYPES
+import { ITodo } from "../types/types";
+
+//MUI ICONS
+import EditIcon from "@mui/icons-material/Edit";
+import DoneIcon from "@mui/icons-material/Done";
+
+//PROPS
 interface TodoItemProps {
   todo: ITodo;
   todos: ITodo[];
   setTodos: React.Dispatch<React.SetStateAction<ITodo[]>>;
-  fetchTodos: any;
+  fetchTodos: () => Promise<void>;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({ todo, fetchTodos }) => {
   const [disabled, setDisabled] = useState<boolean>(true);
   const [currTodo, setCurrTodo] = useState<ITodo>(todo);
 
+  //DELETE TODO
   const handleCheckboxChange = (id: number) => {
     axios
       .delete(`http://localhost:5000/api/todos/${id}`)
@@ -32,26 +38,27 @@ const TodoItem: React.FC<TodoItemProps> = ({ todo, fetchTodos }) => {
       ...prev,
       task: e.target.value,
     }));
-    console.log(currTodo);    
+    console.log(currTodo);
   };
 
+  //CHANGE TODO TASK
   const btnClickHandler = (id: number) => {
     setDisabled((prev) => !prev);
 
-    if(!disabled){
-      axios.put(`http://localhost:5000/api/todos/${id}`, {
-        id: id,
-        task: currTodo.task
-      })
-      .then((response) => {
-        console.log(response.data)
-        fetchTodos();
-      })
-      .catch((error: any) => {
-        console.error(error)
-      })
+    if (!disabled) {
+      axios
+        .put(`http://localhost:5000/api/todos/${id}`, {
+          id: id,
+          task: currTodo.task,
+        })
+        .then((response) => {
+          console.log(response.data);
+          fetchTodos();
+        })
+        .catch((error: any) => {
+          console.error(error);
+        });
     }
-   
   };
 
   return (
