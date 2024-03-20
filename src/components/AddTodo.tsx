@@ -34,9 +34,22 @@ const AddTodo: React.FC<AddTodoProps> = ({ fetchTodos }) => {
   };
 
   return (
-    <div>
-      <input value={inputValue} onChange={inputChangeHandler}></input>
-      <button onClick={btnClickHandler}>Add</button>
+    <div style={{
+      display: "flex"
+    }}>
+      <input 
+      style={{
+        border: "none",
+        outline: "none"
+      }}
+      value={inputValue} onChange={inputChangeHandler}></input>
+      <button style={{
+        padding: "0.25rem  0.75rem",
+        border: "none",
+        fontFamily: "Open Sans",
+        outline: "none"
+      }} 
+      onClick={btnClickHandler}>Add</button>
     </div>
   );
 };
